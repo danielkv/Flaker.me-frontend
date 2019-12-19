@@ -13,7 +13,7 @@ async function create() {
 		show: false,
 		transparent: true,
 		maximizable: false,
-		icon: path.resolve(__dirname, '..', 'assets', 'icons', 'icon-32.png'),
+		icon: path.resolve(__dirname, '..', '..', 'assets', 'icons', 'icon-32.png'),
 		movable: false,
 		center: true,
 	});
@@ -25,7 +25,7 @@ async function create() {
 	}
   
 	// and load the index.html of the app.
-	splashScreen.loadURL(`file://${path.resolve(__dirname, '..', '..', 'public', 'index.html?page=App')}`);
+	splashScreen.loadURL(`file://${path.resolve(__dirname, '..', '..', '..', 'public', 'index.html?page=splashScreen')}`);
   
 	// Emitted when the window is closed.
 	splashScreen.on('closed', () => {
