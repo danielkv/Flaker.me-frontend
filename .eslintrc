@@ -1,7 +1,19 @@
 {
-  "extends": "eslint-config-airbnb",
-  "rules": {
-    	"no-use-before-define": "off",
+	"extends": "eslint-config-airbnb",
+	"plugins": [
+		"react",
+		"import-helpers"
+	],
+	"settings": {
+		"import/resolver": {
+			"babel-plugin-root-import": {
+				"rootPathPrefix": "@components",
+				"rootPathSuffix": "src/renderer/components"
+			}
+		}
+	},
+	"rules": {
+		"no-use-before-define": "off",
 		"react/jsx-filename-extension": "off",
 		"react/prop-types": "off",
 		"comma-dangle": "off",
@@ -26,6 +38,19 @@
 		"react/jsx-props-no-spreading": 0,
 		"jsx-a11y/label-has-associated-control": 0,
 		"jsx-a11y/control-has-associated-label": 0,
-		"jsx-a11y/alt-text": 0
-  }
+		"jsx-a11y/alt-text": 0,
+		"import-helpers/order-imports": [
+			"warn",
+			{
+				"newlinesBetween": "always", // new line between groups
+				"groups": [
+					"/^react/",
+					"module",
+					"/^@/",
+					["parent", "sibling", "index"]
+				],
+				"alphabetize": { "order": "asc", "ignoreCase": true }
+			}
+		]
+	}
 }

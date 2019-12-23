@@ -1,5 +1,6 @@
 import { app } from 'electron';
 import { enableLiveReload } from 'electron-compile';
+
 import initApp from './initApp';
 
 // Keep a global reference of isDevMode
