@@ -14,8 +14,6 @@ function init() {
 		.catch((err)=>{
 			console.error(err);
 		})
-	
-	
 }
 
 export default init;
