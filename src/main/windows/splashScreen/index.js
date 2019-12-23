@@ -2,9 +2,11 @@ import { BrowserWindow } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import path from 'path';
 
+let splashScreen = null;
+
 async function create() {
 	// Create the browser window.
-	let splashScreen = new BrowserWindow({
+	splashScreen = new BrowserWindow({
 		width: 400,
 		height: 150,
 		frame: false,
@@ -39,6 +41,11 @@ async function create() {
 	return splashScreen;
 }
 
+function showMessage(message) {
+	if (splashScreen) splashScreen.webContents.send('message', message);
+}
+
 export default {
-	create
+	create,
+	showMessage
 }

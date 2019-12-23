@@ -4,14 +4,6 @@
 		"react",
 		"import-helpers"
 	],
-	"settings": {
-		"import/resolver": {
-			"babel-plugin-root-import": {
-				"rootPathPrefix": "@components",
-				"rootPathSuffix": "src/renderer/components"
-			}
-		}
-	},
 	"rules": {
 		"no-use-before-define": "off",
 		"react/jsx-filename-extension": "off",
@@ -46,8 +38,9 @@
 				"groups": [
 					"/^react/",
 					"module",
-					"/^@/",
-					["parent", "sibling", "index"]
+					"/components/",
+					["parent", "sibling", "index"],
+					"/apollo\/queries/"
 				],
 				"alphabetize": { "order": "asc", "ignoreCase": true }
 			}

@@ -2,12 +2,13 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { from } from 'apollo-link';
 import { createHttpLink } from 'apollo-link-http';
+import fetch from 'node-fetch';
 
 import authLink from './authLink';
 import initialCache from './initialCache';
 
-const host = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/graphql' : '';
-const httpLink = createHttpLink({ uri: host });
+const host = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000/graphql';
+const httpLink = createHttpLink({ uri: host, fetch });
 
 const cache = new InMemoryCache({});
 cache.writeData({ data: initialCache });
