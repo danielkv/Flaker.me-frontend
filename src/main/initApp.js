@@ -4,6 +4,7 @@ import splashScreenFunctions from './windows/splashScreen';
 import { GET_USER } from '../apollo/queries/user';
 
 function init() {
+	// create an instante of splashscreen
 	const splashScreen = splashScreenFunctions.create();
 
 	client.query({ query: GET_USER })
