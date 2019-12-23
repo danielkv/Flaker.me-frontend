@@ -47,6 +47,10 @@
     }
   },
   "dependencies": {
+    "apollo-cache-inmemory": "^1.6.5",
+    "apollo-client": "^2.6.8",
+    "apollo-link": "^1.2.13",
+    "apollo-link-http": "^1.5.16",
     "electron": "^7.1.7",
     "electron-compile": "^6.4.4",
     "electron-devtools-installer": "^2.2.4",
