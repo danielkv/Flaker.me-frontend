@@ -1,19 +1,29 @@
-import client from '../apollo/client';
-import splashScreenFunctions from './windows/splashScreen';
+import User from './controller/user';
+import storage from './store';
+import splashScreenFn from './windows/splashScreen';
 
-import { GET_USER } from '../apollo/queries/user';
+async function init() {
+	// init storage
+	storage.init();
 
-function init() {
 	// create an instante of splashscreen
-	const splashScreen = splashScreenFunctions.create();
+	const splashScreen = await splashScreenFn.create();
 
-	client.query({ query: GET_USER })
-		.then(()=>{
-			console.log('foi')
-		})
-		.catch((err)=>{
-			console.error(err);
-		})
+	// fire when scree is ready
+	splashScreen.on('ready-to-show', async () => {
+		// set the message on splashboard
+		splashScreenFn.showMessage('Autenticando usuário');
+
+		// authenticates user and load settings
+		User.authenticate()
+			.then(() => {
+				// create files settings
+				// create and open files window
+			})
+			.catch(() => {
+				// create and open login window
+			})
+	})
 }
 
 export default init;

@@ -11,7 +11,7 @@ export default function SplashScreen() {
 	const [message, setMessage] = useState('Carregando...');
 
 	useEffect(() => {
-		ipcRenderer.on('message', setMessage);
+		ipcRenderer.on('message', (_, newMessage) => setMessage(newMessage));
 	}, [])
 
 	return (
