@@ -1,25 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import { ipcRenderer } from 'electron';
 import path from 'path';
-
-import WindowContainer from '../../components/WindowContainer';
 
 import { Container, Message } from './styles';
 
 export default function SplashScreen() {
-	const [message, setMessage] = useState('Carregando...');
-
-	useEffect(() => {
-		ipcRenderer.on('message', (_, newMessage) => setMessage(newMessage));
-	}, [])
-
 	return (
-		<WindowContainer>
-			<Container>
-				<img src={path.resolve(__dirname, '..', '..', '..', 'assets', 'images', 'logo-flaker.png')} />
-				<Message>{message}</Message>
-			</Container>
-		</WindowContainer>
+		<Container>
+			<img src={path.resolve(__dirname, '..', '..', '..', 'assets', 'images', 'logo-flaker.png')} />
+			<Message>carregando...</Message>
+		</Container>
 	)
 }

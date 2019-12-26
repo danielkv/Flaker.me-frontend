@@ -10,7 +10,11 @@ const PATH = path.join(userDataPath, 'settings.json');
 let store;
 
 function init() {
-	store = JSON.parse(fs.readFileSync(PATH));
+	try {
+		store = JSON.parse(fs.readFileSync(PATH));
+	} catch (err) {
+		store = {};
+	}
 }
 	
 function remove(key) {

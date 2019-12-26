@@ -3,9 +3,8 @@ import styled from 'styled-components';
 export default styled.div`
 	flex: 1;
 	overflow: hidden;
-	background-color: #919191;
 	flex-direction: column;
-	align-items: center;
+	align-items: stretch;
 	justify-content: center;
 	border-radius: 4px;
 	margin: 10px;
