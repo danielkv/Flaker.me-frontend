@@ -1,14 +1,15 @@
 import React from 'react';
+import ReactLoading from 'react-loading';
 
 import path from 'path';
 
-import { Container, Message } from './styles';
+import { Container, Spinner } from './styles';
 
 export default function SplashScreen() {
 	return (
 		<Container>
 			<img src={path.resolve(__dirname, '..', '..', '..', 'assets', 'images', 'logo-flaker.png')} />
-			<Message>carregando...</Message>
+			<Spinner><ReactLoading className='loading' type='spin' color='#323246' height={20} /></Spinner>
 		</Container>
 	)
 }

@@ -1,15 +1,17 @@
 import React from 'react';
 import ReactLoading from 'react-loading';
+import { Link } from 'react-router-dom';
 
+import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { useFormik, Form } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import WindowContainer from '../../components/WindowContainer';
+import { FormContainer, FieldsContainer, ButtonsContainer } from '../../components/Forms';
 
 const validationSchema = Yup.object().shape({
-	email: Yup.string().email().required('Campo obrigatório'),
+	email: Yup.string().email('Email inválido').required('Campo obrigatório'),
 	password: Yup.string().required('Campo obrigatório'),
 })
 
@@ -35,25 +37,25 @@ export default function Login() {
 	})
 
 	return (
-		<WindowContainer>
-			<Form onSubmit={handleSubmit}>
-				<TextField variant='outlined' label='Email' name='email' type='email' onChange={handleChange} value={email} />
-
-				<TextField variant='outlined' label='Senha' name='password' type='password' onChange={handleChange} value={password} />
-
-				{isSubmitting
-					? (
-						<div style={{ justifyContent: 'center' }}>
-							<ReactLoading className='loading' type='bubbles' color='#323246' height={50} />
-						</div>
-					)
-					: <Button type='submit' label='Login' />}
-
-				{/* <div style={{ justifyContent: 'center' }}>
-					<Link href='#'>Registrar</Link>
-				</div> */}
+		<FormContainer>
+			<form onSubmit={handleSubmit}>
+				<Typography variant='h5'>Login</Typography>
+				<Typography variant='caption' style={{ marginBottom: 30, color: '#999' }}>Acesse com seus dados</Typography>
+				<FieldsContainer>
+					<TextField label='Email' name='email' type='email' onChange={handleChange} value={email} />
+					<TextField label='Senha' name='password' type='password' onChange={handleChange} value={password} />
+				</FieldsContainer>
+				<ButtonsContainer>
+					<Button size='large' disabled={isSubmitting} color='primary' type='submit'>
+						{isSubmitting
+							? <ReactLoading className='loading' type='spin' height={25} />
+							: 'Login'}
+					</Button>
+					<Button component={Link} to='/createAccount'>Registrar</Button>
+					<Button component={Link} to='/forgotPassword' variant='text' size='small'>Esqueci minha senha</Button>
+				</ButtonsContainer>
 				
-			</Form>
-		</WindowContainer>
+			</form>
+		</FormContainer>
 	)
 }

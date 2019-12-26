@@ -8,9 +8,7 @@ export const Container = styled.div`
 	justify-content: center;
 `;
 
-export const Message = styled.div`
+export const Spinner = styled.div`
 	margin-top: 15px;
-	display: block;
 	text-align: center;
-	color: #333;
 `;

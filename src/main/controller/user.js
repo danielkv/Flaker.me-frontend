@@ -1,5 +1,5 @@
 import client from '../../apollo/client';
-import storage from '../store';
+import storage from '../storage';
 
 import { GET_USER } from '../../apollo/queries/user';
 

@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 
+export const ContentContainer = styled.div`
+	flex: 1;
+`;
+
 export const Header = styled.div`
-	
 	height:38px;
 	align-items:center;
 	padding:0 10px;
