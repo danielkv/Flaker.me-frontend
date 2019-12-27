@@ -9,8 +9,25 @@ export const GET_USER = gql`
 	}
 `;
 
+export const LOGIN = gql`
+	mutation ($email: String!, $password: String!) {
+		login (email: $email, password: $password) {
+			user {
+				id
+				firstName
+				email
+				company {
+					id
+					name
+				}
+			}
+			token
+		}
+	}
+`;
+
 export const AUTHENTICATE = gql`
-	query ($token: String!) {
+	mutation ($token: String!) {
 		authenticate (token: $token) {
 			id
 			firstName

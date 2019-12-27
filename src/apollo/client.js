@@ -26,4 +26,7 @@ const client = new ApolloClient({
 client.onResetStore(()=>cache.writeData({ data: initialCache }));
 client.onClearStore(()=>cache.writeData({ data: initialCache }));
 
+// set global apollo client for renderer
+global.ApolloClient = client;
+
 export default client;

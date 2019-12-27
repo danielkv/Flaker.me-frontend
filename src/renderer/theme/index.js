@@ -13,6 +13,9 @@ export default createMuiTheme({
 			root: {
 				margin: '5px 0'
 			}
+		},
+		MuiFormHelperText: {
+			
 		}
 	},
 	props: {

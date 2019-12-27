@@ -9,14 +9,17 @@ async function init() {
 	// create an instante of splashscreen
 	const mainScreen = await mainScreenFn.create();
 
-	mainScreen.on('ready-to-show', ()=>{
+	mainScreen.on('ready-to-show', () => {
+		User.initEvents();
+		
 		User.authenticate()
 			.then(()=>{
-				mainScreen.webContents.send('redirectTo', 'login');
+				// user logged in => send user to files
+				mainScreen.webContents.send('redirectTo', 'createAccount');
 			})
 			.catch(()=>{
+				// no user logged in => send user to login
 				mainScreen.webContents.send('redirectTo', 'login');
-
 			});
 	})
 }
