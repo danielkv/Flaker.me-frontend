@@ -12,6 +12,7 @@ export const FilesContainer = styled.div`
 	justify-content: flex-start;
 	align-items: stretch;
 	overflow-y: auto;
+	overflow-x: hidden;
 `;
 
 export const Footer = styled.div`
