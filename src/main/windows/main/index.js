@@ -1,6 +1,5 @@
 import { BrowserWindow, screen } from 'electron';
-import installExtension, { REACT_DEVELOPER_TOOLS, APOLLO_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import os from 'os';
+import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import path from 'path';
 
 let mainScreen = null;
@@ -32,7 +31,7 @@ function create() {
 	// eslint-disable-next-line no-undef
 	if (isDevMode) {
 		installExtension(REACT_DEVELOPER_TOOLS)
-			.then(()=>installExtension(APOLLO_DEVELOPER_TOOLS))
+			// .then(()=>installExtension(APOLLO_DEVELOPER_TOOLS))
 			.then(()=>mainScreen.webContents.openDevTools());
 	}
 

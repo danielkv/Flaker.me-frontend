@@ -16,3 +16,20 @@ export const GET_USER_FILES = gql`
 		}
 	}
 `;
+
+export const ADD_TEMP_FILE = gql`
+	mutation ($path: String!) {
+		addTempFile(path: $path) @client
+	}
+`;
+
+export const GET_TEMP_FILES = gql`
+	query {
+		tempFiles @client {
+			id
+			originalName
+			path
+			status
+		}
+	}
+`;

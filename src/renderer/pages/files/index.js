@@ -8,54 +8,20 @@ import { FormHelperText } from '@material-ui/core';
 import File from './file';
 import { Container, FilesContainer, Footer, StatusContainer, StatusText, StatusIcon, UserInfo } from './styles';
 
-import { GET_USER_FILES } from '../../../apollo/queries/files';
+import { GET_USER_FILES, GET_TEMP_FILES } from '../../../apollo/queries/files';
 import { GET_LOGGED_IN_USER_ID, GET_USER } from '../../../apollo/queries/user';
-
-const files = [
-	{
-		id: 1,
-		name: 'file_156562_asdwdasd546549874wd4s548d.zip',
-		originalName: 'file_156562.zip',
-		size: 177000,
-		url: 'http://localdeacesso/teste',
-		bucket: 'teste',
-		createdAt: '23/05/2019 15:33',
-	},
-	{
-		id: 2,
-		name: 'file_156562_asdwdasd546549874wd4s548d.zip',
-		originalName: 'file_156562.zip',
-		size: 171697,
-		url: 'http://localdeacesso/teste',
-		bucket: 'teste',
-		createdAt: '23/05/2019 15:33',
-	},
-	{
-		id: 3,
-		name: 'file_156562_asdwdasd546549874wd4s548d.zip',
-		originalName: 'file_156562.zip',
-		size: 1725000,
-		url: 'http://localdeacesso/teste',
-		bucket: 'teste',
-		createdAt: '23/05/2019 15:33',
-	},
-	{
-		id: 4,
-		name: 'file_156562_asdwdasd546549874wd4s548d.zip',
-		originalName: 'file_156562.zip',
-		size: 177890,
-		url: 'http://localdeacesso/teste',
-		bucket: 'teste',
-		createdAt: '23/05/2019 15:33',
-	},
-]
-const loadingFiles = false;
+import { IS_WATCHING } from '../../../apollo/queries/watcher';
 
 
 export default function Files() {
-	const { data: { loggedUserInId } = {} } = useQuery(GET_LOGGED_IN_USER_ID);
-	const { data: { user = null } = {} } = useQuery(GET_USER, { variables: { id: loggedUserInId } });
-	// const { data: { user: { files = [] } = {} } = {}, loading: loadingFiles } = useQuery(GET_USER_FILES, { variables: { id: loggedUserInId } });
+	const { data: { loggedUserId } = {} } = useQuery(GET_LOGGED_IN_USER_ID);
+	const { data: { user = null } = {} } = useQuery(GET_USER, { variables: { id: loggedUserId } });
+	const { data: { user: { files = [] } = {} } = {}, loading: loadingFiles } = useQuery(GET_USER_FILES, { variables: { id: loggedUserId } });
+	const { data: { tempFiles = [] } } = useQuery(GET_TEMP_FILES);
+
+	const { data: { isWatching } = {} } = useQuery(IS_WATCHING);
+
+	const filesList = [...tempFiles, ...files];
 
 	return (
 		<Container>
@@ -66,8 +32,8 @@ export default function Files() {
 							<ReactLoading className='loading' type='bubbles' color='#323246' height={50} />
 						</div>
 					)
-					: files.length
-						? files.map((file, index) => <File key={index} file={file} />)
+					: filesList.length
+						? filesList.map((file, index) => <File key={index} file={file} />)
 						: <FormHelperText>Não há nenhum arquivo salvo</FormHelperText>}
 			</FilesContainer>
 			{/* <this.sizeLimit size={size} limit={limit} /> */}

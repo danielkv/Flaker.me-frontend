@@ -1,6 +1,9 @@
+import client from '../apollo/client';
 import User from './controller/user';
 import storage from './storage';
 import mainScreenFn from './windows/main';
+
+import { START_WATCHING } from '../apollo/queries/watcher';
 
 async function init() {
 	// init storage
@@ -16,6 +19,9 @@ async function init() {
 			.then(()=>{
 				// user logged in => send user to files
 				mainScreen.webContents.send('redirectTo', 'files');
+
+				// start monitoring
+				client.mutate({ mutation: START_WATCHING });
 			})
 			.catch(()=>{
 				// no user logged in => send user to login

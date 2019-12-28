@@ -10,7 +10,6 @@ async function authenticate() {
 	const userToken = storage.get('userToken');
 
 	if (userToken) {
-		console.log(userToken);
 		// look for user
 		const { data: { authenticate: user = null } = {} } = await client.mutate({ mutation: AUTHENTICATE, variables: { token: userToken } });
 
@@ -23,7 +22,7 @@ async function authenticate() {
 }
 
 function logUserIn(user, token) {
-	client.writeData({ data: { userLoggedInId: user.id, userToken: token, company: user.company.id } });
+	client.writeData({ data: { loggedUserId: user.id, userToken: token, company: user.company.id } });
 	storage.set('userToken', token);
 }
 

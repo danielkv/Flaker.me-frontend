@@ -7,10 +7,11 @@ export const Container = styled.div`
 `;
 
 export const FilesContainer = styled.div`
-	flex:1;
-	flex-direction:column;
-	justify-content:flex-start;
-	align-items:stretch;
+	flex: 1;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	overflow-y: auto;
 `;
 
 export const Footer = styled.div`
