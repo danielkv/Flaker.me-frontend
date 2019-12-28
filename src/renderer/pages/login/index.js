@@ -24,13 +24,14 @@ const initialValues = {
 	password: '',
 }
 
-export default function Login() {
+export default function Login({ history }) {
 	const [login, { error }] = useMutation(LOGIN);
 
 	function onSubmit(result) {
 		return login({ variables: { email: result.email, password: result.password } })
 			.then(({ data: { login: loginData } }) => {
 				ipcRenderer.send('logUserIn', loginData);
+				history.push('/files');
 			})
 	}
 
@@ -52,8 +53,24 @@ export default function Login() {
 				<Typography variant='h5'>Login</Typography>
 				<Typography variant='caption' style={{ marginBottom: 30, color: '#999' }}>Acesse com seus dados</Typography>
 				<FieldsContainer>
-					<TextField label='Email' name='email' type='email' onChange={handleChange} value={email} error={!!errors.email} helperText={errors.email} />
-					<TextField label='Senha' name='password' type='password' onChange={handleChange} value={password} error={!!errors.password} helperText={errors.password} />
+					<TextField
+						label='Email'
+						name='email'
+						type='email'
+						onChange={handleChange}
+						value={email}
+						error={!!errors.email}
+						helperText={errors.email}
+					/>
+					<TextField
+						label='Senha'
+						name='password'
+						type='password'
+						onChange={handleChange}
+						value={password}
+						error={!!errors.password}
+						helperText={errors.password}
+					/>
 				</FieldsContainer>
 				{!!error && <FormHelperText error style={{ textAlign: 'center' }}>{getErrors(error)}</FormHelperText>}
 				<ButtonsContainer>

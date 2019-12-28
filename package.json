@@ -63,6 +63,7 @@
     "graphql-tag": "^2.10.1",
     "node-fetch": "^2.6.0",
     "react": "^16.12.0",
+    "react-circular-progressbar": "^2.0.3",
     "react-dom": "^16.12.0",
     "react-hot-loader": "^4.12.18",
     "react-loading": "^2.0.3",

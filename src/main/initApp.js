@@ -15,7 +15,7 @@ async function init() {
 		User.authenticate()
 			.then(()=>{
 				// user logged in => send user to files
-				mainScreen.webContents.send('redirectTo', 'createAccount');
+				mainScreen.webContents.send('redirectTo', 'files');
 			})
 			.catch(()=>{
 				// no user logged in => send user to login
