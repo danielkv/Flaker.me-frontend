@@ -5,7 +5,8 @@ import { createHttpLink } from 'apollo-link-http';
 import { merge } from 'lodash';
 import fetch from 'node-fetch';
 
-import filesResolvers from '../resolvers/file';
+import fileResolvers from '../resolvers/file';
+import userResolvers from '../resolvers/user';
 import watcherResolvers from '../resolvers/watcher';
 import authLink from './authLink';
 import initialCache from './initialCache';
@@ -17,7 +18,7 @@ const httpLink = createHttpLink({ uri: host, fetch });
 const cache = new InMemoryCache({});
 cache.writeData({ data: initialCache });
 
-const resolvers = merge(filesResolvers, watcherResolvers);
+const resolvers = merge(fileResolvers, watcherResolvers, userResolvers);
 
 const client = new ApolloClient({
 	cache,

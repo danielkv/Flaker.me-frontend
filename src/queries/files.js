@@ -16,7 +16,6 @@ export const GET_USER_FILES = gql`
 		}
 	}
 `;
-
 export const ADD_TEMP_FILE = gql`
 	mutation ($path: String!) {
 		addTempFile(path: $path) @client
@@ -31,5 +30,17 @@ export const GET_TEMP_FILES = gql`
 			path
 			status
 		}
+	}
+`;
+
+export const UPLOAD_FILE = gql`
+	query ($file: TempFile!) {
+		uploadFile(file: $file) @client
+	}
+`;
+
+export const REQUEST_UPLOAD_URI = gql`
+	query ($originalName: String!) {
+		requestUploadUri(originalName: $originalName)
 	}
 `;
