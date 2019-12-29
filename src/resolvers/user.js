@@ -15,17 +15,21 @@ export default {
 	
 			if (user) client.mutate({ mutation: LOG_USER_IN, variables: { user, userToken } });
 	
-			return user;
+			return null;
 		},
 
 		logUserIn: (_, { user, token }, { cache }) => {
 			cache.writeData({ data: { loggedUserId: user.id, userToken: token, company: user.company.id } });
 			storage.set('userToken', token);
+
+			return null;
 		},
 		
 		logUserOut: (_, __, { client }) => {
 			client.resetStore();
 			storage.remove('userToken');
+			
+			return null;
 		}
 	}
 }

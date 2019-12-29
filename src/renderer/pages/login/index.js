@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 
 import { useMutation } from '@apollo/react-hooks';
 import { Typography, Button, FormHelperText, TextField } from '@material-ui/core';
-import { ipcRenderer } from 'electron';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -12,7 +11,7 @@ import { FormContainer, FieldsContainer, ButtonsContainer } from '../../componen
 
 import { getErrors } from '../../../errors'
 
-import { LOGIN } from '../../../apollo/queries/user';
+import { LOGIN, LOG_USER_IN } from '../../../queries/user';
 
 const validationSchema = Yup.object().shape({
 	email: Yup.string().email('Email inválido').required('Campo obrigatório'),
@@ -26,11 +25,12 @@ const initialValues = {
 
 export default function Login({ history }) {
 	const [login, { error }] = useMutation(LOGIN);
+	const [logUserIn] = useMutation(LOG_USER_IN);
 
 	function onSubmit(result) {
 		return login({ variables: { email: result.email, password: result.password } })
-			.then(({ data: { login: loginData } }) => {
-				ipcRenderer.send('logUserIn', loginData);
+			.then(async ({ data: { login: loginData } }) => {
+				await logUserIn({ variables: loginData });
 				history.push('/files');
 			})
 	}
