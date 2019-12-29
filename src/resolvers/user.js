@@ -1,0 +1,31 @@
+import storage from '../main/storage';
+
+import { AUTHENTICATE, LOG_USER_IN } from '../queries/user';
+
+export default {
+	Mutation: {
+		authenticateClient: async (_, __, { client }) => {
+			// get user token from local storage
+			const userToken = storage.get('userToken');
+			// if token does not exists throw an error
+			if (!userToken) throw new Error('Token não encontrado.');
+			
+			// look for user
+			const { data: { authenticate: user = null } = {} } = await client.mutate({ mutation: AUTHENTICATE, variables: { token: userToken } });
+	
+			if (user) client.mutate({ mutation: LOG_USER_IN, variables: { user, userToken } });
+	
+			return user;
+		},
+
+		logUserIn: (_, { user, token }, { cache }) => {
+			cache.writeData({ data: { loggedUserId: user.id, userToken: token, company: user.company.id } });
+			storage.set('userToken', token);
+		},
+		
+		logUserOut: (_, __, { client }) => {
+			client.resetStore();
+			storage.remove('userToken');
+		}
+	}
+}

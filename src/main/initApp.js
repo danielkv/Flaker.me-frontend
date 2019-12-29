@@ -1,9 +1,9 @@
 import client from '../apollo/client';
-import User from './controller/user';
 import storage from './storage';
 import mainScreenFn from './windows/main';
 
-import { START_WATCHING } from '../apollo/queries/watcher';
+import { AUTHENTICATE_CLIENT } from '../queries/user';
+import { START_WATCHING } from '../queries/watcher';
 
 async function init() {
 	// init storage
@@ -13,9 +13,7 @@ async function init() {
 	const mainScreen = await mainScreenFn.create();
 
 	mainScreen.on('ready-to-show', () => {
-		User.initEvents();
-		
-		User.authenticate()
+		client.mutate({ mutation: AUTHENTICATE_CLIENT })
 			.then(()=>{
 				// user logged in => send user to files
 				mainScreen.webContents.send('redirectTo', 'files');

@@ -32,6 +32,24 @@ export const LOGIN = gql`
 	}
 `;
 
+export const AUTHENTICATE_CLIENT = gql`
+	mutation {
+		authenticateClient @client
+	}
+`;
+
+export const LOG_USER_IN = gql`
+	mutation ($user: User!, $token: String!) {
+		logUserIn(user: $user, token: $token) @client
+	}
+`;
+
+export const LOG_USER_OUT = gql`
+	mutation {
+		logUserOut @client
+	}
+`;
+
 export const AUTHENTICATE = gql`
 	mutation ($token: String!) {
 		authenticate (token: $token) {

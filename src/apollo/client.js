@@ -5,10 +5,10 @@ import { createHttpLink } from 'apollo-link-http';
 import { merge } from 'lodash';
 import fetch from 'node-fetch';
 
+import filesResolvers from '../resolvers/file';
+import watcherResolvers from '../resolvers/watcher';
 import authLink from './authLink';
 import initialCache from './initialCache';
-import filesResolvers from './resolvers/files';
-import watcherResolvers from './resolvers/watcher';
 
 
 const host = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000/graphql';

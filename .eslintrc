@@ -40,7 +40,7 @@
 					"module",
 					"/components/",
 					["parent", "sibling", "index"],
-					"/apollo\/queries/"
+					"/queries/"
 				],
 				"alphabetize": { "order": "asc", "ignoreCase": true }
 			}
