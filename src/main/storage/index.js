@@ -4,14 +4,20 @@ import path from 'path';
 
 // Renderer process has to get `app` module via `remote`, whereas the main process can get it directly
 // app.getPath('userData') will return a string of the user's app data directory path.
-const userDataPath = (electron.app || electron.remote.app).getPath('userData');
-const PATH = path.join(userDataPath, 'settings.json');
+// eslint-disable-next-line no-undef
+let userDataPath = null;
+let PATH = null;
+
 
 let store;
 
 function init() {
+	userDataPath = global.isDevMode ? path.resolve(__dirname, '..', '..', '..') : (electron.app || electron.remote.app).getPath('userData');
+	PATH = path.join(userDataPath, 'settings.json');
+
 	try {
-		store = JSON.parse(fs.readFileSync(PATH));
+		const fileData = fs.readFileSync(PATH);
+		store = JSON.parse(fileData);
 	} catch (err) {
 		store = {};
 	}
@@ -39,7 +45,7 @@ function set(key, val) {
 }
 
 // expose the class
-module.exports = {
+export default {
 	init,
 	set,
 	get,

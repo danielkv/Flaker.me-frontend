@@ -18,17 +18,20 @@ export default {
 			const watch = JSON.parse(settings.find((s) => s.key === 'watch').value);
 
 			// start monitoring directories
-			watcher = await chokidar.watch(watch[0], {
+			watcher = chokidar.watch(watch[0], {
 				persistent: true,
 				awaitWriteFinish: true,
 			});
 
+			
+
 			// fires this event when add file to directory
 			watcher.on('add', (path) => {
+				console.log(path);
 				client.mutate({ mutation: ADD_TEMP_FILE, variables: { path } });
 			})
 
-			// update cache variable
+			// update cache variables
 			cache.writeData({ data: { isWatching: true } });
 		},
 		stopWatching: (_, __, { cache }) => {

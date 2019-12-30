@@ -12,7 +12,7 @@ import authLink from './authLink';
 import initialCache from './initialCache';
 
 
-const host = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000/graphql';
+const host = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:4000/graphql';
 const httpLink = createHttpLink({ uri: host, fetch });
 
 const cache = new InMemoryCache({});
@@ -23,7 +23,8 @@ const resolvers = merge(fileResolvers, watcherResolvers, userResolvers);
 const client = new ApolloClient({
 	cache,
 	resolvers,
-	link: from([authLink, httpLink]),
+	connectToDevTools: true,
+	link: from([authLink(cache), httpLink]),
 	/* defaultOptions: {
 		watchQuery: {
 			fetchPolicy: 'cache-and-network'

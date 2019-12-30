@@ -35,11 +35,13 @@ export default {
 		},
 		uploadFile: async (_, { file }, { client }) => {
 			// request upload URI from server
-			const uploadUri = await client.query({ query: REQUEST_UPLOAD_URI, variables: { originalName: file.originalName } });
+			const { data: { requestUploadUri: uploadUri = null } } = await client.query({ query: REQUEST_UPLOAD_URI, variables: { originalName: file.originalName } });
 
+			if (!uploadUri) return;
+			
 			// create new file stream
 			const fileStream = fs.createReadStream(file.path, { highWaterMark: 128 * 1024 });
-
+			
 			// setup headers
 			const requestOptions = {
 				url: uploadUri,
@@ -51,6 +53,7 @@ export default {
 
 			// pipe temp file to gCloud
 			fileStream.pipe(request.post(requestOptions, (err, response, new_file) => {
+				if (err) console.log(err);
 				// if (err) return fileError(file, err);
 				// if (typeof new_file !== 'object') new_file = JSON.parse(new_file);
 				
@@ -59,6 +62,7 @@ export default {
 
 			// if an errors occurs
 			fileStream.on('error', (err)=>{
+				console.log(err);
 				/* fileError(file, err, 'download');
 				//log to server
 				logger(`Error uploading file '${file.originalname}': ${err}`, {status:206}); */
@@ -66,6 +70,8 @@ export default {
 		
 			// if receive any data (progress)
 			fileStream.on('data', (chunk)=> {
+
+				
 				/* const buffer = new Buffer.from(chunk);
 				fileProgress(file, buffer, 'uploading'); */
 			});

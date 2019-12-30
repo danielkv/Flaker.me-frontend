@@ -34,7 +34,7 @@ export default function Files() {
 		}
 	}, []);
 
-	const { data: { isWatching } = {} } = useQuery(IS_WATCHING);
+	// const { data: { isWatching } = {} } = useQuery(IS_WATCHING);
 
 	const filesList = [...tempFiles, ...files];
 
@@ -54,6 +54,7 @@ export default function Files() {
 			{/* <this.sizeLimit size={size} limit={limit} /> */}
 			<Footer>
 				<StatusContainer>
+					<button onClick={()=>{stopWatching(); startWatching()}}>Monitorar</button>
 					<StatusText>Monitorando</StatusText>
 					<StatusIcon stat='watching' />
 				</StatusContainer>

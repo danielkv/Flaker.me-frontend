@@ -38,6 +38,18 @@ export const AUTHENTICATE_CLIENT = gql`
 	}
 `;
 
+export const GET_USER_TOKEN = gql`
+	query {
+		userToken @client
+	}
+`;
+
+export const GET_COMPANY = gql`
+	query {
+		company @client
+	}
+`;
+
 export const LOG_USER_IN = gql`
 	mutation ($user: User!, $token: String!) {
 		logUserIn(user: $user, token: $token) @client

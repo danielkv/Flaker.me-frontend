@@ -34,7 +34,7 @@ export const GET_TEMP_FILES = gql`
 `;
 
 export const UPLOAD_FILE = gql`
-	query ($file: TempFile!) {
+	mutation ($file: TempFile!) {
 		uploadFile(file: $file) @client
 	}
 `;

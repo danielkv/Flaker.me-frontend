@@ -4,7 +4,7 @@ import { enableLiveReload } from 'electron-compile';
 import initApp from './initApp';
 
 // Keep a global reference of isDevMode
-global.isDevMode = process.execPath.match(/[\\/]electron/);
+global.isDevMode = !!process.execPath.match(/[\\/]electron/);
 
 // eslint-disable-next-line no-undef
 if (isDevMode) enableLiveReload({ strategy: 'react-hmr' });
