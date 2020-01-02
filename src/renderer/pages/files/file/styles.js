@@ -23,8 +23,9 @@ export const CenterContainer = styled.div`
 	flex-direction: column;
 `;
 export const RightContainer = styled.div`
-	width: 50px;
 	flex-direction:row;
+	align-items: center;
+	justify-content: flex-end;
 `;
 export const Title = styled.div`
 	font-size:14px;

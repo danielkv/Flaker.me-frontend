@@ -28,8 +28,21 @@ html, body, #App {
 	height: 100%;
 }
 
+.loading.big {
+	width: 24px !important;
+	height: 24px !important;
+}
+.loading.big svg {
+	width: 24px !important;
+	height: 24px !important;
+}
+.loading {
+	width: 20px !important;
+	height: 20px !important;
+}
 .loading svg {
-	width: 100%;
+	width: 20px !important;
+	height: 20px !important;
 }
 
 /* Let's get this party started */

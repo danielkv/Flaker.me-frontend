@@ -13,9 +13,8 @@ export default {
 			// look for user
 			const { data: { authenticate: user = null } = {} } = await client.mutate({ mutation: AUTHENTICATE, variables: { token: userToken } });
 	
+			// log local user
 			if (user) client.mutate({ mutation: LOG_USER_IN, variables: { user, token: userToken } });
-	
-			return null;
 		},
 
 		logUserIn: (_, { user, token }, { cache }) => {

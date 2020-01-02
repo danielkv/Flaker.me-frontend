@@ -4,6 +4,10 @@ import path from 'path';
 
 let mainScreen = null;
 
+function get() {
+	return mainScreen;
+}
+
 function create() {
 	// if instance exists only return it
 	if (mainScreen) return mainScreen;
@@ -51,5 +55,6 @@ function create() {
 }
 
 export default {
+	get,
 	create,
 }

@@ -1,15 +1,17 @@
 import React from 'react';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import ReactLoading from 'react-loading';
 
-import { InsertDriveFile } from '@material-ui/icons';
-// import { CircularProgressbar } from 'react-circular-progressbar';
+import { GetApp, InsertDriveFile } from '@material-ui/icons';
+
 
 import { Container, Title, CreateDate, LeftContainer, CenterContainer, RightContainer } from './styles';
 
-/* const progressStyles = {
+const progressStyles = ({
 	root: {
 		display: 'block',
-		width: 24,
-		height: 24
+		width: 20,
+		height: 20
 	},
 	path: {
 		stroke: '#5b5b6b',
@@ -19,9 +21,22 @@ import { Container, Title, CreateDate, LeftContainer, CenterContainer, RightCont
 	trail: {
 		stroke: '#d6d6d6',
 	},
-} */
+});
 
-export default function Files({ file }) {
+function renderIcon(file) {
+	switch (file.status) {
+	case 'loading':
+	case 'standBy':
+		return <ReactLoading className='loading' type='spin' color='#5b5b6b' />;
+	case 'download':
+		return <GetApp />;
+	case 'uploading':
+		return <CircularProgressbar strokeWidth={14} value={file.progress} styles={progressStyles} />;
+	default: return false;
+	}
+}
+
+export default function File({ file }) {
 	return (
 		<Container>
 			<LeftContainer>
@@ -31,9 +46,9 @@ export default function Files({ file }) {
 				<Title>{file.originalName || file.name}</Title>
 				<CreateDate>{file.createdAt}</CreateDate>
 			</CenterContainer>
-			{/* 	<RightContainer>
-				
-			</RightContainer> */}
+			<RightContainer>
+				{renderIcon(file)}
+			</RightContainer>
 		</Container>
 	);
 }

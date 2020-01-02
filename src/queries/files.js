@@ -16,9 +16,64 @@ export const GET_USER_FILES = gql`
 		}
 	}
 `;
+
+export const CREATE_FILE = gql`
+	mutation CreateFile ($data: FileInput!) {
+		createFile(data: $data) {
+			id
+			name
+			originalName
+			size
+			url
+			bucket
+			createdAt
+		}
+	}
+`;
+
 export const ADD_TEMP_FILE = gql`
-	mutation ($path: String!) {
+	mutation AddTempFile ($path: String!) {
 		addTempFile(path: $path) @client
+	}
+`;
+
+export const UPDATE_FILE_PROGRESS = gql`
+	mutation UpdateFileProgress ($id: ID!, $bytesCount: Int!) {
+		updateFileProgress(id: $id, bytesCount: $bytesCount) @client
+	}
+`;
+
+/* export const GET_TEMP_FILE = gql`
+	query ($id: ID!) {
+		tempFiles(id: $id) @client {
+			id
+			path
+			originalName
+			progress
+			bytesCount
+			size
+			createdAt
+			status
+		}
+	}
+`; */
+
+export const TEMP_FILE_FRAGMENT = gql`
+	fragment GetTempfile on TempFile {
+		id
+		path
+		originalName
+		progress
+		createdAt
+		bytesCount
+		size
+		status
+	}
+`;
+
+export const FINISH_FILE_UPLOAD = gql`
+	mutation ($file: TempFile!) {
+		finishFileUpload(file: $file) @client
 	}
 `;
 
@@ -26,8 +81,12 @@ export const GET_TEMP_FILES = gql`
 	query {
 		tempFiles @client {
 			id
-			originalName
 			path
+			originalName
+			createdAt
+			progress
+			bytesCount
+			size
 			status
 		}
 	}

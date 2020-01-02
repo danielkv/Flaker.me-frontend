@@ -27,7 +27,6 @@ export default {
 
 			// fires this event when add file to directory
 			watcher.on('add', (path) => {
-				console.log(path);
 				client.mutate({ mutation: ADD_TEMP_FILE, variables: { path } });
 			})
 
