@@ -35,7 +35,7 @@ function create() {
 	// eslint-disable-next-line no-undef
 	if (isDevMode) {
 		installExtension(REACT_DEVELOPER_TOOLS)
-			// .then(()=>installExtension(APOLLO_DEVELOPER_TOOLS))
+			// .then(()=>installExtension(APOLLO_DEVELOPER_TOOLS, true))
 			.then(()=>mainScreen.webContents.openDevTools());
 	}
 

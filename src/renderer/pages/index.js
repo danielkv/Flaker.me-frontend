@@ -10,11 +10,15 @@ import path from 'path';
 
 import WindowContainer from '../components/WindowContainer';
 
+import { createApolloClient } from '../../apollo/client';
 import theme from '../theme';
 import Routes from './routes';
 import { Header, HeaderRightInfo } from './styles';
 
-const ApolloClient = electron.remote.getGlobal('ApolloClient');
+// get apollo cache from main
+const ApolloCache = electron.remote.getGlobal('apolloCache');
+// create new instance of apollo client
+const ApolloClient = createApolloClient(ApolloCache);
 
 export default function Pages() {
 	return (
