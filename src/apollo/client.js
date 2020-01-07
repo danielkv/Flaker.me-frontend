@@ -10,8 +10,6 @@ import userResolvers from '../resolvers/user';
 import watcherResolvers from '../resolvers/watcher';
 import authLink from './authLink';
 import initialCache from './initialCache';
-import typeDefs from './typeDefs';
-
 
 const host = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:4000/graphql';
 const httpLink = createHttpLink({ uri: host, fetch });
@@ -26,7 +24,6 @@ const client = new ApolloClient({
 	resolvers,
 	connectToDevTools: true,
 	link: from([authLink(cache), httpLink]),
-	// typeDefs,
 	/* defaultOptions: {
 		watchQuery: {
 			fetchPolicy: 'cache-and-network'

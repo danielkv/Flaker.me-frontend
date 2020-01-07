@@ -23,8 +23,6 @@ export default {
 				awaitWriteFinish: true,
 			});
 
-			
-
 			// fires this event when add file to directory
 			watcher.on('add', (path) => {
 				client.mutate({ mutation: ADD_TEMP_FILE, variables: { path } });
