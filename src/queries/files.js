@@ -31,9 +31,27 @@ export const CREATE_FILE = gql`
 	}
 `;
 
-export const ADD_TEMP_FILE = gql`
-	mutation AddTempFile ($path: String!) {
-		addTempFile(path: $path) @client
+export const ADD_FILES = gql`
+	mutation AddFiles ($data: [File!]!) {
+		addFiles(data: $data) @client
+	}
+`;
+
+export const ADD_ONLINE_FILES = gql`
+	mutation AddOnlineFiles ($data: [File!]!) {
+		addOnlineFiles(data: $data) @client
+	}
+`;
+
+export const ADD_LOCAL_FILE = gql`
+	mutation AddLocalFile ($path: String!) {
+		addLocalFile(path: $path) @client
+	}
+`;
+
+export const UPDATE_FILE = gql`
+	mutation UpdateFile ($id: ID!, $data: File!, $update: Boolean) {
+		updateFile(id: $id, data: $data, update: $update) @client
 	}
 `;
 
@@ -43,63 +61,63 @@ export const UPDATE_FILE_PROGRESS = gql`
 	}
 `;
 
-/* export const GET_TEMP_FILE = gql`
-	query ($id: ID!) {
-		tempFiles(id: $id) @client {
-			id
-			path
-			originalName
-			progress
-			bytesCount
-			size
-			createdAt
-			status
-		}
-	}
-`; */
-
-export const TEMP_FILE_FRAGMENT = gql`
-	fragment GetTempfile on TempFile {
+export const FILE_FRAGMENT = gql`
+	fragment FragFile on File {
 		id
-		path
 		originalName
-		progress
 		createdAt
 		bytesCount
 		size
 		status
+		
+		#online
+		name
+		url
+		bucket
+		
+		#local
+		path
+		progress
+
+		#helper
+		helperText
 	}
 `;
 
 export const FINISH_FILE_UPLOAD = gql`
-	mutation ($file: TempFile!) {
+	mutation ($file: File!) {
 		finishFileUpload(file: $file) @client
 	}
 `;
 
-export const GET_TEMP_FILES = gql`
-	query {
-		tempFiles @client {
+export const COMPANY_LIMITS = gql`
+	query($id: ID!) {
+		company(id: $id) {
 			id
-			path
-			originalName
-			createdAt
-			progress
-			bytesCount
+			limit
 			size
-			status
 		}
 	}
 `;
 
+export const GET_FILES = gql`
+	query {
+		files @client {
+			...FragFile
+		}
+	}
+
+	${FILE_FRAGMENT}
+`;
+
 export const UPLOAD_FILE = gql`
-	mutation ($file: TempFile!) {
+	mutation ($file: File!) {
 		uploadFile(file: $file) @client
 	}
 `;
 
 export const REQUEST_UPLOAD_URI = gql`
-	query ($originalName: String!) {
-		requestUploadUri(originalName: $originalName)
+	query ($originalName: String!, $size: Long!) {
+		requestUploadUri(originalName: $originalName, size: $size)
 	}
 `;

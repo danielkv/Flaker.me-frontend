@@ -42,13 +42,7 @@ export const StatusText = styled.div`
 export const StatusIcon = styled.div`
 	width: 8px;
 	height: 8px;
-	margin: 10px;
+	margin-right: 10px;
 	border-radius: 5px;
-	background-color: ${({ stat }) => {
-		if (stat === 'watching') return '#54963d';
-		if (stat === 'uploading') return '#e6b400';
-		if (stat === 'error') return '#c1272d';
-
-		return '#333';
-	}};
+	background-color: #54963d;
 `;

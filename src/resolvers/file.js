@@ -4,54 +4,97 @@ import mime from 'mime-types';
 import { basename } from 'path';
 import request from 'request';
 
+import { getErrors } from '../errors';
 import mainScreenFn from '../main/windows/main';
 
 import {
 	CREATE_FILE,
 	FINISH_FILE_UPLOAD,
-	GET_TEMP_FILES,
-	TEMP_FILE_FRAGMENT,
+	GET_FILES,
+	FILE_FRAGMENT,
 	UPLOAD_FILE,
 	REQUEST_UPLOAD_URI,
 	UPDATE_FILE_PROGRESS,
-	GET_USER_FILES,
+	ADD_FILES,
+	UPDATE_FILE,
 } from '../queries/files';
-import { GET_LOGGED_IN_USER_ID } from '../queries/user';
 
 export default {
 	Mutation: {
-		addTempFile: (_, { path }, { client, cache }) => {
-			// get temp files already added
-			const { tempFiles } = cache.readQuery({ query: GET_TEMP_FILES });
-
+		addLocalFile: (_, { path }, { client, cache }) => {
+			// get list of files
+			const { files } = cache.readQuery({ query: GET_FILES });
+			
 			// get temp file stats
 			const stats = fs.statSync(path);
 
-			// create temp file
+			// create and normalize local file
 			const file = {
-				id: uniqueId(),
+				id: uniqueId('local_'),
 				path,
 				originalName: basename(path),
-				createdAt: (new Date()).getTime(),
+				createdAt: '',
 				progress: 0,
 				bytesCount: 0,
-				size: stats.size,
 				status: 'loading',
-				__typename: 'TempFile',
+				size: stats.size, // converted to kb
+				__typename: 'File',
+
+				name: '',
+				url: '',
+				bucket: '',
+				helperText: 'enviando...',
 			}
 
-			// add temp file to cache
-			cache.writeQuery({ query: GET_TEMP_FILES, data: { tempFiles: [file, ...tempFiles] } });
+			// if originalName and size are different of files add new file to list
+			if (!files.find((f) => f.originalName === file.originalName && f.size === file.size)) {
+				// add local files to apollo cache
+				client.mutate({ mutation: ADD_FILES, variables: { data: [file] } })
+					// handle file upload
+					.then(()=>client.mutate({ mutation: UPLOAD_FILE, variables: { file } }));
+			}
+		},
+		addOnlineFiles: (_, { data }, { client }) => {
+			// normalize online files
+			const files = data.map((file) => Object.assign(file, {
+				path: '',
+				progress: 0,
+				bytesCount: file.size,
+				status: 'standBy',
+				helperText: '',
+			}));
 
-			// handle file upload
-			client.mutate({ mutation: UPLOAD_FILE, variables: { file } });
+			// add online files to apollo cache
+			client.mutate({ mutation: ADD_FILES, variables: { data: files } });
+		},
+		addFiles: (_, { data }, { cache }) => {
+			// get files already added
+			const { files } = cache.readQuery({ query: GET_FILES });
 
-			// update temp file on renderer
-			mainScreenFn.get().webContents.send('updateTempFiles');
+			// add files to cache
+			cache.writeQuery({ query: GET_FILES, data: { files: [...data, ...files] } });
+
+			// update file on renderer
+			mainScreenFn.get().webContents.send('updateFileList', 'addFiles');
 		},
 		uploadFile: async (_, { file }, { client }) => {
 			// request upload URI from server
-			const { data: { requestUploadUri: uploadUri = null } } = await client.query({ query: REQUEST_UPLOAD_URI, variables: { originalName: file.originalName } });
+			const { data: { requestUploadUri: uploadUri = null } } = await client.query({
+				query: REQUEST_UPLOAD_URI,
+				variables: { originalName: file.originalName, size: file.size }
+			})
+				.catch((err)=>{
+					client.mutate({
+						mutation: UPDATE_FILE,
+						variables: {
+							id: file.id,
+							data: {
+								status: 'error',
+								helperText: getErrors(err)
+							}
+						}
+					})
+				})
 			// case uploadUri is undefined exit function
 			if (!uploadUri) return;
 			
@@ -69,80 +112,120 @@ export default {
 
 			// pipe temp file to gCloud
 			fileStream.pipe(request.post(requestOptions, (err, reponse, newFileString) => {
-				if (err) console.log(err);
-
-				const newFile = JSON.parse(newFileString);
-				client.mutate({ mutation: FINISH_FILE_UPLOAD, variables: { file: Object.assign(file, { name: newFile.name, bucket: newFile.bucket }) } });
+				try {
+					if (err) throw err;
+				
+					const newFile = JSON.parse(newFileString);
+					client.mutate({
+						mutation: FINISH_FILE_UPLOAD,
+						variables: {
+							file: Object.assign(file, { name: newFile.name, bucket: newFile.bucket })
+						}
+					});
+				} catch (finalError) {
+					client.mutate({
+						mutation: UPDATE_FILE,
+						variables: {
+							id: file.id,
+							data: {
+								status: 'error',
+								helperText: getErrors(finalError)
+							}
+						}
+					})
+				}
 			}));
 
 			// case errors occurs
 			fileStream.on('error', (err)=>{
-				console.log(err);
-				/* fileError(file, err, 'download');
-				//log to server
-				logger(`Error uploading file '${file.originalname}': ${err}`, {status:206}); */
+				client.mutate({
+					mutation: UPDATE_FILE,
+					variables: {
+						id: file.id,
+						data: {
+							status: 'error',
+							helperText: getErrors(err)
+						}
+					}
+				})
 			})
 		
 			// when receive any data (progress)
-			fileStream.on('data', async (chunk) => {
+			fileStream.on('data', (chunk) => {
+				// eslint-disable-next-line new-cap
 				const buffer = new Buffer.from(chunk);
-				const bytesCount = buffer.length;
+				const bytesCount = buffer && buffer.length ? buffer.length : 0;
 
 				client.mutate({ mutation: UPDATE_FILE_PROGRESS, variables: { id: file.id, bytesCount } });
 			});
 		},
-		updateFileProgress: (_, { id, bytesCount }, { cache }) => {
-			const cacheID = `TempFile:${id}`;
-			const file = cache.readFragment({ fragment: TEMP_FILE_FRAGMENT, id: cacheID });
+		updateFileProgress: (_, { id, bytesCount }, { client, cache }) => {
+			const cacheID = `File:${id}`;
+			const file = cache.readFragment({ fragment: FILE_FRAGMENT, id: cacheID });
 			
 			// status
 			file.status = 'uploading';
 			file.bytesCount += bytesCount;
 			
+			// progress
 			const prevProgress = file.progress;
 			const nextProgress = Math.round((file.bytesCount * 100) / file.size);
-			const progressDifference = (nextProgress - prevProgress) >= 3;
-			if (progressDifference) file.progress = nextProgress;
+			const updateRenderer = (nextProgress - prevProgress) >= 4;
+			if (updateRenderer) file.progress = nextProgress;
+			
+			// update file in cache
+			client.mutate({ mutation: UPDATE_FILE, variables: { id, data: file, update: updateRenderer } });
+		},
+		updateFile: (_, { id, data, update = true }, { cache }) => {
+			const cacheID = `File:${id}`;
+			const file = cache.readFragment({ fragment: FILE_FRAGMENT, id: cacheID });
+			
+			// file new state
+			const newState = Object.assign(file, data);
 			
 			// save to cache
-			cache.writeFragment({ fragment: TEMP_FILE_FRAGMENT, id: cacheID, data: file });
+			cache.writeFragment({ fragment: FILE_FRAGMENT, id: cacheID, data: newState });
 			
 			// update on renderer
-			if (progressDifference) mainScreenFn.get().webContents.send('updateTempFiles');
+			if (update) mainScreenFn.get().webContents.send('updateFileList', 'updateFile');
 		},
-		finishFileUpload: (_, { file }, { cache, client }) => {
-			// get temp file
-			const cacheID = `TempFile:${file.id}`;
-			const tempFile = cache.readFragment({ fragment: TEMP_FILE_FRAGMENT, id: cacheID });
+		finishFileUpload: (_, { file }, { client }) => {
+			// update file status to loading
+			client.mutate({ mutation: UPDATE_FILE, variables: { id: file.id, data: { status: 'loading' } } });
 			
-			// update file status to standBy
-			cache.writeFragment({ fragment: TEMP_FILE_FRAGMENT, id: cacheID, data: Object.assign(tempFile, { status: 'loading' }) });
-			// update on renderer
-			mainScreenFn.get().webContents.send('updateTempFiles');
-
 			const saveFile = {
 				originalName: file.originalName,
 				name: file.name,
 				size: file.size,
 				bucket: file.bucket,
-				createdAt: file.createdAt,
 			}
 
-			const { loggedUserId } = cache.readQuery({ query: GET_LOGGED_IN_USER_ID });
-			client.mutate({ mutation: CREATE_FILE, variables: { data: saveFile }, refetchQueries: [{ query: GET_USER_FILES, variables: { id: loggedUserId } }] })
-				.then(() => {
-					// get temp files
-					const { tempFiles } = cache.readQuery({ query: GET_TEMP_FILES });
-					
-					// remove tempFile uploaded
-					const tempFileIndex = tempFiles.findIndex((f) => f.id === tempFile.id);
-					tempFiles.splice(tempFileIndex, 1);
-
-					// save in cache
-					cache.writeQuery({ query: GET_TEMP_FILES, data: { tempFiles } });
-					// update in renderer
-					mainScreenFn.get().webContents.send('updateTempFiles');
+			client.mutate({ mutation: CREATE_FILE, variables: { data: saveFile } })
+				.then(({ data: { createFile: newFile } }) => {
+					client.mutate({
+						mutation: UPDATE_FILE,
+						variables: {
+							id: file.id,
+							data: Object.assign(file, saveFile, {
+								status: 'standBy',
+								url: newFile.url,
+								helperText: '',
+							})
+						}
+					});
 				})
+				.catch((err) => {
+					client.mutate({
+						mutation: UPDATE_FILE,
+						variables: {
+							id: file.id,
+							data: {
+								status: 'error',
+								helperText: getErrors(err)
+							}
+						}
+					})
+				});
 		},
 	}
 }

@@ -1,6 +1,6 @@
 import chokidar from 'chokidar';
 
-import { ADD_TEMP_FILE } from '../queries/files';
+import { ADD_LOCAL_FILE } from '../queries/files';
 import { GET_USER_SETTINGS } from '../queries/settings';
 import { GET_LOGGED_IN_USER_ID } from '../queries/user';
 
@@ -22,10 +22,10 @@ export default {
 				persistent: true,
 				awaitWriteFinish: true,
 			});
-
+			
 			// fires this event when add file to directory
 			watcher.on('add', (path) => {
-				client.mutate({ mutation: ADD_TEMP_FILE, variables: { path } });
+				client.mutate({ mutation: ADD_LOCAL_FILE, variables: { path } });
 			})
 
 			// update cache variables

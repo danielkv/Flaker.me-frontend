@@ -2,8 +2,8 @@ import React from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import ReactLoading from 'react-loading';
 
-import { GetApp, InsertDriveFile } from '@material-ui/icons';
-
+import { GetApp, InsertDriveFile, Error } from '@material-ui/icons';
+import { isEqual } from 'lodash';
 
 import { Container, Title, CreateDate, LeftContainer, CenterContainer, RightContainer } from './styles';
 
@@ -26,17 +26,19 @@ const progressStyles = ({
 function renderIcon(file) {
 	switch (file.status) {
 	case 'loading':
-	case 'standBy':
 		return <ReactLoading className='loading' type='spin' color='#5b5b6b' />;
 	case 'download':
 		return <GetApp />;
+	case 'error':
+		return <Error style={{ color: '#ca4238', fontSize: 22 }} />;
 	case 'uploading':
 		return <CircularProgressbar strokeWidth={14} value={file.progress} styles={progressStyles} />;
+	case 'standBy':
 	default: return false;
 	}
 }
 
-export default function File({ file }) {
+function File({ file }) {
 	return (
 		<Container>
 			<LeftContainer>
@@ -44,7 +46,7 @@ export default function File({ file }) {
 			</LeftContainer>
 			<CenterContainer>
 				<Title>{file.originalName || file.name}</Title>
-				<CreateDate>{file.createdAt}</CreateDate>
+				<CreateDate>{file.helperText || file.createdAt}</CreateDate>
 			</CenterContainer>
 			<RightContainer>
 				{renderIcon(file)}
@@ -52,3 +54,7 @@ export default function File({ file }) {
 		</Container>
 	);
 }
+
+export default React.memo(File, (prev, next) => {
+	return isEqual(prev, next);
+})

@@ -5,7 +5,7 @@ const initialCache = {
 	company: null,
 
 	isWatching: false, // is monitoring directories
-	tempFiles: [], // files for upload, standby, error uploading
+	files: [], // all files: local + online
 }
 
 export default initialCache;

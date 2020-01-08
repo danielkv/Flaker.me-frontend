@@ -3,22 +3,21 @@ import { Paper } from '@material-ui/core';
 import styled from 'styled-components';
 
 export const Container = styled(Paper)`
-	display: flex;
+	
 	justify-content: space-between;
 	align-items: center;
 	flex-direction: row;
 	min-height: 80px;
+	height: auto;
 	
 	margin: 5px;
 	padding: 8px 15px;
-	
 `;
 
 export const LeftContainer = styled.div`
 	width: 40px;
 `;
 export const CenterContainer = styled.div`
-	display: flexbox;
 	flex: 1;
 	flex-direction: column;
 `;
