@@ -12,3 +12,13 @@ export const GET_USER_SETTINGS = gql`
 		}
 	}
 `;
+
+export const SAVE_SETTINGS = gql`
+	mutation ($data: [MetaInput!]!) {
+		saveSettings(data: $data) {
+			id
+			key
+			value
+		}
+	}
+`;

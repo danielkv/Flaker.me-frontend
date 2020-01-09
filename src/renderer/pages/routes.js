@@ -7,8 +7,8 @@ import CreateAccount from './createAccount';
 import Files from './files';
 import ForgotPassword from './forgotPassword';
 import Login from './login';
+import Settings from './settings';
 import SplashScreen from './splashScreen';
-import { ContentContainer } from './styles';
 
 export default function Main() {
 	const history = useHistory();
@@ -20,7 +20,7 @@ export default function Main() {
 	}, [])
 
 	return (
-		<ContentContainer>
+		<div style={{ flex: 1 }}>
 			<Switch>
 				<Route exact path='/' component={SplashScreen} />
 
@@ -29,7 +29,8 @@ export default function Main() {
 				<Route path='/forgotPassword' component={ForgotPassword} />
 
 				<Route path='/files' component={Files} />
+				<Route path='/settings' component={Settings} />
 			</Switch>
-		</ContentContainer>
+		</div>
 	)
 }

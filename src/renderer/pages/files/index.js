@@ -6,6 +6,8 @@ import { useMutation, useQuery, useApolloClient } from '@apollo/react-hooks';
 import { FormHelperText } from '@material-ui/core';
 import { ipcRenderer } from 'electron';
 
+import LoadingBlock from '../../components/LoadingBlock';
+
 import File from './file';
 import CompanyLimits from './size';
 import { Container, FilesContainer, Footer, StatusContainer, StatusText, StatusIcon, UserInfo } from './styles';
@@ -42,12 +44,15 @@ export default function Files() {
 		// get files
 		getFiles();
 
-		// setup updateFileList event
+		// setup getFiles listener
 		ipcRenderer.on('updateFileList', getFiles);
 
 		return () => {
 			// stop monitoring
 			stopWatching();
+
+			// remove listener updateFileList
+			ipcRenderer.removeAllListeners('updateFileList');
 		}
 	}, []);
 
@@ -55,11 +60,7 @@ export default function Files() {
 		<Container>
 			<FilesContainer>
 				{loadingFiles
-					? (
-						<div style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-							<ReactLoading className='loading' type='bubbles' color='#323246' height={50} />
-						</div>
-					)
+					? <LoadingBlock />
 					: files.length
 						? files.map((file, index) => <File key={index} file={file} />)
 						: <FormHelperText>Não há nenhum arquivo salvo</FormHelperText>}
