@@ -36,14 +36,14 @@ export default {
 				createdAt: '',
 				progress: 0,
 				bytesCount: 0,
-				status: 'loading',
+				status: 'standBy',
 				size: stats.size, // converted to kb
 				__typename: 'File',
 
 				name: '',
 				url: '',
 				bucket: '',
-				helperText: 'enviando...',
+				helperText: '',
 			}
 
 			// if originalName and size are different of files add new file to list
@@ -78,8 +78,12 @@ export default {
 			mainScreenFn.get().webContents.send('updateFileList', 'addFiles');
 		},
 		uploadFile: async (_, { file }, { client }) => {
+			file.status = 'loading';
+			file.helperText = 'aguardando...';
+			client.mutate({ mutation: UPDATE_FILE, variables: { id: file.id, data: file } });
+
 			// request upload URI from server
-			const { data: { requestUploadUri: uploadUri = null } } = await client.query({
+			const uriResult = await client.query({
 				query: REQUEST_UPLOAD_URI,
 				variables: { originalName: file.originalName, size: file.size }
 			})
@@ -95,7 +99,12 @@ export default {
 						}
 					})
 				})
+
+			// if some error occurs it will return nothing to result
+			if (!uriResult) return;
+				
 			// case uploadUri is undefined exit function
+			const { data: { requestUploadUri: uploadUri = null } } = uriResult;
 			if (!uploadUri) return;
 			
 			// create new file stream
@@ -109,7 +118,7 @@ export default {
 					'Content-Length': file.size,
 				}
 			}
-
+			
 			// pipe temp file to gCloud
 			fileStream.pipe(request.post(requestOptions, (err, reponse, newFileString) => {
 				try {
@@ -166,6 +175,7 @@ export default {
 			// status
 			file.status = 'uploading';
 			file.bytesCount += bytesCount;
+			file.helperText = 'enviando...';
 			
 			// progress
 			const prevProgress = file.progress;

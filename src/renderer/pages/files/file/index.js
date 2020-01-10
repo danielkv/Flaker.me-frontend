@@ -2,10 +2,14 @@ import React from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import ReactLoading from 'react-loading';
 
+import { useMutation } from '@apollo/react-hooks';
+import { IconButton } from '@material-ui/core';
 import { GetApp, InsertDriveFile, Error } from '@material-ui/icons';
 import { isEqual } from 'lodash';
 
 import { Container, Title, CreateDate, LeftContainer, CenterContainer, RightContainer } from './styles';
+
+import { UPLOAD_FILE } from '../../../../queries/files';
 
 const progressStyles = ({
 	root: {
@@ -23,22 +27,27 @@ const progressStyles = ({
 	},
 });
 
-function renderIcon(file) {
-	switch (file.status) {
-	case 'loading':
-		return <ReactLoading className='loading' type='spin' color='#5b5b6b' />;
-	case 'download':
-		return <GetApp />;
-	case 'error':
-		return <Error style={{ color: '#ca4238', fontSize: 22 }} />;
-	case 'uploading':
-		return <CircularProgressbar strokeWidth={14} value={file.progress} styles={progressStyles} />;
-	case 'standBy':
-	default: return false;
-	}
-}
 
 function File({ file }) {
+	// MUTATIONS
+	const [reUploadFile] = useMutation(UPLOAD_FILE, { variables: { file } })
+
+	// FUNCTIONS
+	function renderIcon(fileInfo) {
+		switch (fileInfo.status) {
+		case 'loading':
+			return <ReactLoading className='loading' type='spin' color='#5b5b6b' />;
+		case 'download':
+			return <GetApp />;
+		case 'error':
+			return <IconButton onClick={()=>reUploadFile()} size='small'><Error style={{ color: '#ca4238', fontSize: 22 }} /></IconButton>;
+		case 'uploading':
+			return <CircularProgressbar strokeWidth={14} value={fileInfo.progress} styles={progressStyles} />;
+		case 'standBy':
+		default: return false;
+		}
+	}
+
 	return (
 		<Container>
 			<LeftContainer>

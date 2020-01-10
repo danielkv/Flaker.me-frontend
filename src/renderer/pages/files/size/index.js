@@ -18,7 +18,7 @@ export default function CompanyLimits() {
 		variables: { id: company }
 	})
 
-	if (loadingLimits) return <div>teste</div>;
+	if (loadingLimits) return true;
 	if (error) return true;
 
 	const sizeDisplay = convertSize(size);
