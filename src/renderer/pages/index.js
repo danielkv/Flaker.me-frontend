@@ -5,8 +5,8 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import { ThemeProvider } from '@material-ui/core/styles';
 import electron from 'electron';
 
+import { WindowContainer } from '../components/Containers';
 import Header from '../components/Header';
-import WindowContainer from '../components/WindowContainer';
 
 import theme from '../theme';
 import Routes from './routes';

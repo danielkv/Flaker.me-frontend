@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ReactLoading from 'react-loading';
 import { useHistory } from 'react-router-dom';
 
-import { Button, TextField, FormHelperText } from '@material-ui/core';
-import { ipcRenderer, remote } from 'electron';
+import { Fab, Button, TextField, FormHelperText } from '@material-ui/core';
+import { ArrowBack } from '@material-ui/icons';
+import { remote } from 'electron';
 import path from 'path';
 
-import { FormContainer, FieldsContainer, ButtonsContainer } from '../../components/Forms';
+import { FieldsContainer, ButtonsContainer } from '../../components/Forms';
 
 export default function Settings({ handleSubmit, handleChange, isSubmitting, values: { watch, lifecycle }, errors, setFieldValue }) {
 	// COMMON
@@ -28,6 +29,7 @@ export default function Settings({ handleSubmit, handleChange, isSubmitting, val
 	
 	return (
 		<form onSubmit={handleSubmit}>
+			<Fab onClick={()=>history.push('/files')} style={{ marginBottom: 20 }} size='small'><ArrowBack style={{ fontSize: 20 }} /></Fab>
 			<FieldsContainer>
 				<Button
 					disabled={isSubmitting}
@@ -36,11 +38,16 @@ export default function Settings({ handleSubmit, handleChange, isSubmitting, val
 						e.preventDefault();
 					}}
 				>
-					{watch ? path.basename(watch.value[0]) : 'Selecionar pasta'}
+					{watch.value[0] ? path.basename(watch.value[0]) : 'Selecionar pasta'}
 				</Button>
-				{!!errors.watch && <FormHelperText error>{errors.watch.value}</FormHelperText>}
+				<FormHelperText error={!!errors.watch}>
+					{errors.watch
+						? errors.watch.value
+						: 'Todos arquivos dentro da pasta selecionada serão enviados para nuvem'}
+				</FormHelperText>
 				
 				<TextField
+					style={{ marginTop: 40 }}
 					label='Excluir em quantos (dias)'
 					type='number'
 					name='lifecycle.value'
@@ -54,6 +61,7 @@ export default function Settings({ handleSubmit, handleChange, isSubmitting, val
 			</FieldsContainer>
 			<ButtonsContainer>
 				<Button
+					style={{ marginTop: 40 }}
 					color='primary'
 					type='submit'
 					disabled={isSubmitting}
@@ -64,7 +72,6 @@ export default function Settings({ handleSubmit, handleChange, isSubmitting, val
 							: 'Salvar'
 					}
 				</Button>
-				<Button onClick={()=>history.push('/files')}>Cancelar</Button>
 			</ButtonsContainer>
 		</form>
 	)

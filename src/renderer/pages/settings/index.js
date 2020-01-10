@@ -28,7 +28,7 @@ const validationSchema = Yup.object().shape({
 export default function Settings({ history }) {
 	// queries
 	const { data: { loggedUserId } } = useQuery(GET_LOGGED_IN_USER_ID);
-	const { data: { user: { settings } }, loading: loadingSettings } = useQuery(GET_USER_SETTINGS, { variables: { id: loggedUserId } });
+	const { data: { user: { settings = null } = {} } = {}, loading: loadingSettings } = useQuery(GET_USER_SETTINGS, { variables: { id: loggedUserId } });
 
 	// mutations
 	const [saveSettings, { error: errorSaving }] = useMutation(SAVE_SETTINGS, { refetchQueries: [{ query: GET_USER_SETTINGS, variables: { id: loggedUserId } }] });
@@ -56,7 +56,7 @@ export default function Settings({ history }) {
 	const initialValues = {
 		watch: watchSetting
 			// eslint-disable-next-line prefer-object-spread
-			? Object.assign({}, watchSetting, { value: JSON.parse(watchSetting.value), action: 'update' })
+			? Object.assign({}, watchSetting, { value: watchSetting.value ? JSON.parse(watchSetting.value) : [], action: 'update' })
 			: [{ action: 'create', key: 'watch', value: '' }],
 		lifecycle: lifecycle
 			// eslint-disable-next-line prefer-object-spread
@@ -65,7 +65,7 @@ export default function Settings({ history }) {
 	}
 
 	return (
-		<FormContainer>
+		<FormContainer style={{ position: 'relative' }}>
 			<Formik
 				onSubmit={onSubmit}
 				initialValues={initialValues}
