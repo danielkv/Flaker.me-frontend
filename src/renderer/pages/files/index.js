@@ -83,12 +83,10 @@ export default function Files() {
 				: <NoWatchFolder />}
 			<CompanyLimits />
 			<Footer>
-				{isWatching && (
-					<StatusContainer>
-						<StatusIcon />
-						<StatusText>Monitorando</StatusText>
-					</StatusContainer>
-				)}
+				<StatusContainer>
+					<StatusIcon color={isWatching ? '#54963d' : '#ffaa00'} />
+					<StatusText>{isWatching ? 'Monitorando' : 'Aguardando'}</StatusText>
+				</StatusContainer>
 				
 				{loadingUser
 					? <ReactLoading type='spin' className='loading' color='#cccccc' />

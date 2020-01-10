@@ -15,7 +15,11 @@ export default {
 			const { data: { user: { settings } } } = await client.query({ query: GET_USER_SETTINGS, variables: { id: loggedUserId } });
 
 			// find watch directories in settings array
-			const watch = JSON.parse(settings.find((s) => s.key === 'watch').value);
+			const watchSetting = settings.find((s) => s.key === 'watch');
+
+			// if watch folder was't selected
+			if (!watchSetting || !watchSetting.value || watchSetting.value === '' || watchSetting.value === '[]') return;
+			const watch = JSON.parse(watchSetting.value);
 
 			// start monitoring directories
 			watcher = chokidar.watch(watch[0], {

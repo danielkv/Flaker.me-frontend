@@ -44,5 +44,5 @@ export const StatusIcon = styled.div`
 	height: 8px;
 	margin-right: 10px;
 	border-radius: 5px;
-	background-color: #54963d;
+	background-color: ${({ color })=>color};
 `;
