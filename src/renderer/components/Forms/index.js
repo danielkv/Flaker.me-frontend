@@ -5,6 +5,7 @@ export const FormContainer = styled.div`
 	flex: 1;
 	padding: 25px 30px;
 	flex-direction: column;
+	overflow-y: auto !important;
 `;
 
 export const FieldsContainer = styled.div`

@@ -76,3 +76,14 @@ export const AUTHENTICATE = gql`
 		}
 	}
 `;
+
+export const CREATE_USER = gql`
+	mutation ($data: UserInput!) {
+		createUser (data: $data) {
+			id
+			firstName
+			lastName
+			email
+		}
+	}
+`;
