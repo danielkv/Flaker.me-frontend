@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import client from '../apollo/client';
+import { getErrors } from '../errors';
 import storage from './storage';
 import mainScreenFn from './windows/main';
 
@@ -28,7 +29,7 @@ async function init() {
 			})
 			.catch((err)=>{
 				// eslint-disable-next-line no-undef
-				if (isDevMode) console.log(err);
+				if (isDevMode) console.log(getErrors(err));
 
 				// no user logged in => send user to login
 				mainScreen.webContents.send('redirectTo', 'login');
