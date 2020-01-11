@@ -7,6 +7,7 @@ import { IconButton } from '@material-ui/core';
 import { GetApp, InsertDriveFile, Error } from '@material-ui/icons';
 import { isEqual } from 'lodash';
 
+import { readableDateTime, convertFileSize } from '../../../utils';
 import { Container, Title, CreateDate, LeftContainer, CenterContainer, RightContainer } from './styles';
 
 import { UPLOAD_FILE } from '../../../../queries/files';
@@ -48,6 +49,9 @@ function File({ file }) {
 		}
 	}
 
+	const readableDate = readableDateTime(file.createdAt);
+	const readableSize = convertFileSize(file.size);
+
 	return (
 		<Container>
 			<LeftContainer>
@@ -55,7 +59,7 @@ function File({ file }) {
 			</LeftContainer>
 			<CenterContainer>
 				<Title>{file.originalName || file.name}</Title>
-				<CreateDate>{file.helperText || file.createdAt}</CreateDate>
+				<CreateDate>{file.helperText || `${readableSize} - ${readableDate}`}</CreateDate>
 			</CenterContainer>
 			<RightContainer>
 				{renderIcon(file)}

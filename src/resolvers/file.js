@@ -219,6 +219,7 @@ export default {
 							data: Object.assign(file, saveFile, {
 								status: 'standBy',
 								url: newFile.url,
+								createdAt: newFile.createdAt,
 								helperText: '',
 							})
 						}

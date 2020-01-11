@@ -2,14 +2,11 @@ import React from 'react';
 
 import { useQuery } from '@apollo/react-hooks';
 
+import { convertFileSize } from '../../../utils';
 import { Container, Size, SizeText } from './styles';
 
 import { COMPANY_LIMITS } from '../../../../queries/files';
 import { GET_COMPANY } from '../../../../queries/user';
-
-function convertSize(bytes, decimals = 1) {
-	return `${(bytes / 1024 / 1024 / 1024).toFixed(decimals).replace('.', ',')}GB`;
-}
 
 export default function CompanyLimits() {
 	const { data: { company } } = useQuery(GET_COMPANY);
@@ -21,8 +18,8 @@ export default function CompanyLimits() {
 	if (loadingLimits) return true;
 	if (error) return true;
 
-	const sizeDisplay = convertSize(size);
-	const limitDisplay = convertSize(limit);
+	const sizeDisplay = convertFileSize(size);
+	const limitDisplay = convertFileSize(limit);
 
 	return (
 		<Container>
