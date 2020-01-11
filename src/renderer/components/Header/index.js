@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 import { IconButton } from '@material-ui/core';
 import { Settings as SettingsIcon, KeyboardArrowDown as KeyboardArrowDownIcon } from '@material-ui/icons';
+import { remote } from 'electron';
 import path from 'path';
 
 import { Header, HeaderRightInfo } from './styles';
@@ -24,7 +25,9 @@ export default function HeaderComponent() {
 						<SettingsIcon fontSize='small' style={{ color: '#848490' }} />
 					</IconButton>
 				)}
-				<IconButton><KeyboardArrowDownIcon fontSize='small' style={{ color: '#ffffff' }} /></IconButton>
+				<IconButton title='Minimizar' alt='Minimizar' onClick={()=>remote.getCurrentWindow().hide()}>
+					<KeyboardArrowDownIcon fontSize='small' style={{ color: '#ffffff' }} />
+				</IconButton>
 			</HeaderRightInfo>
 		</Header>
 	)
