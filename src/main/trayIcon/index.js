@@ -19,7 +19,7 @@ export function createTrayIcon() {
 
 	const mainScreen = mainScreenFn.get();
 
-	trayIcon = new Tray(path.resolve(__dirname, '..', 'assets', 'icons', 'tray-icon.png'));
+	trayIcon = new Tray(path.resolve(__dirname, '..', '..', 'assets', 'icons', 'tray-icon.png'));
 
 	trayIcon.setToolTip('Flaker.me');
 	const contextMenu = Menu.buildFromTemplate([
