@@ -17,6 +17,15 @@ export const GET_USER_FILES = gql`
 	}
 `;
 
+export const CHECK_DELETED_FILES = gql`
+	mutation CheckDeletedFiles  {
+		checkDeletedFiles {
+			id
+			name
+		}
+	}
+`;
+
 export const CREATE_FILE = gql`
 	mutation CreateFile ($data: FileInput!) {
 		createFile(data: $data) {

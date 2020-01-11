@@ -4,7 +4,7 @@ import ReactLoading from 'react-loading';
 
 import { useMutation } from '@apollo/react-hooks';
 import { IconButton } from '@material-ui/core';
-import { GetApp, InsertDriveFile, Error } from '@material-ui/icons';
+import { InsertDriveFile, Error } from '@material-ui/icons';
 import { isEqual } from 'lodash';
 
 import { readableDateTime, convertFileSize } from '../../../utils';
@@ -38,8 +38,8 @@ function File({ file }) {
 		switch (fileInfo.status) {
 		case 'loading':
 			return <ReactLoading className='loading' type='spin' color='#5b5b6b' />;
-		case 'download':
-			return <GetApp />;
+		case 'deleted':
+			return <Error style={{ color: '#ccc', fontSize: 22 }} />;
 		case 'error':
 			return <IconButton onClick={()=>reUploadFile()} size='small'><Error style={{ color: '#ca4238', fontSize: 22 }} /></IconButton>;
 		case 'uploading':

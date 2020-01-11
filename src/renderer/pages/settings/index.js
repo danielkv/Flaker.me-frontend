@@ -37,6 +37,7 @@ export default function Settings({ history }) {
 	function onSubmit(result) {
 		const newResult = cloneDeep(result);
 		newResult.watch.value = JSON.stringify(newResult.watch.value);
+		newResult.lifecycle.value = newResult.lifecycle.value.toString();
 		const dataSave = Object.keys(result).map((key)=>{
 			// eslint-disable-next-line no-underscore-dangle
 			delete newResult[key].__typename;

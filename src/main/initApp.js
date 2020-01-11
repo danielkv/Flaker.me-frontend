@@ -4,7 +4,7 @@ import { getErrors } from '../errors';
 import storage from './storage';
 import mainScreenFn from './windows/main';
 
-import { GET_USER_FILES, ADD_ONLINE_FILES } from '../queries/files';
+import { GET_USER_FILES, ADD_ONLINE_FILES, CHECK_DELETED_FILES, UPDATE_FILE } from '../queries/files';
 import { AUTHENTICATE_CLIENT, GET_LOGGED_IN_USER_ID } from '../queries/user';
 
 async function init() {
@@ -23,6 +23,20 @@ async function init() {
 				const { data: { user: { files = [] } } } = await client.query({ query: GET_USER_FILES, variables: { id: loggedUserId }, fetchPolicy: 'no-cache' });
 
 				await client.mutate({ mutation: ADD_ONLINE_FILES, variables: { data: files } });
+
+				// check for deleted files
+				await client.mutate({ mutation: CHECK_DELETED_FILES, fetchPolicy: 'no-cache' })
+					.then(({ data: { checkDeletedFiles: deletedFiles } }) => {
+						deletedFiles.forEach(file => {
+							client.mutate({
+								mutation: UPDATE_FILE,
+								variables: {
+									id: file.id,
+									data: { helperText: 'Esse arquivo foi excluido da nuvem', status: 'deleted' }
+								}
+							})
+						})
+					})
 
 				// user logged in => send user to files
 				mainScreen.webContents.send('redirectTo', 'files');
