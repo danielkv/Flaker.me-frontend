@@ -1,4 +1,5 @@
 import storage from '../main/storage';
+import mainScreenFn from '../main/windows/main';
 
 import { AUTHENTICATE, LOG_USER_IN } from '../queries/user';
 
@@ -27,6 +28,10 @@ export default {
 		logUserOut: (_, __, { client }) => {
 			client.resetStore();
 			storage.remove('userToken');
+
+			const mainScreen = mainScreenFn.get();
+
+			mainScreen.webContents.send('redirectTo', 'login');
 			
 			return null;
 		}

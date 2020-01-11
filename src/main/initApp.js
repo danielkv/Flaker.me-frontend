@@ -2,6 +2,7 @@
 import client from '../apollo/client';
 import { getErrors } from '../errors';
 import storage from './storage';
+import { createTrayIcon } from './trayIcon';
 import mainScreenFn from './windows/main';
 
 import { GET_USER_FILES, ADD_ONLINE_FILES, CHECK_DELETED_FILES, UPDATE_FILE } from '../queries/files';
@@ -13,6 +14,9 @@ async function init() {
 
 	// create an instante of splashscreen
 	const mainScreen = await mainScreenFn.create();
+
+	// create app tray icon
+	createTrayIcon();
 
 	mainScreen.on('ready-to-show', () => {
 		client.mutate({ mutation: AUTHENTICATE_CLIENT })
