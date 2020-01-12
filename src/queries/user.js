@@ -63,6 +63,12 @@ export const LOG_USER_OUT = gql`
 	}
 `;
 
+export const INIT_USER = gql`
+	mutation {
+		initUser @client
+	}
+`;
+
 export const AUTHENTICATE = gql`
 	mutation ($token: String!) {
 		authenticate (token: $token) {
