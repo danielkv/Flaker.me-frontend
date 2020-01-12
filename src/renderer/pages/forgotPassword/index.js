@@ -20,7 +20,7 @@ const initialValues = {
 }
 
 export default function ForgotPassword() {
-	function onSubmit(result) {
+	function onSubmit() {
 
 	}
 

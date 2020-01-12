@@ -25,7 +25,7 @@ export const SizeText = styled.div`
 	box-shadow:2px 2px 2px rgba(0,0,0,0.3);
 	
 	left:${({ size, limit })=>{
-		const left = (size * 100 / limit) - 48;
+		const left = ((size * 100) / limit) - 48;
 		if (left < 0) return 0;
 		if (left > 253) return 253;
 		return left;

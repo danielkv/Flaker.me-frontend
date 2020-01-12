@@ -25,7 +25,14 @@ export default function HeaderComponent() {
 						<SettingsIcon fontSize='small' style={{ color: '#848490' }} />
 					</IconButton>
 				)}
-				<IconButton title='Minimizar' alt='Minimizar' onClick={()=>remote.getCurrentWindow().hide()}>
+				<IconButton
+					title='Minimizar'
+					alt='Minimizar'
+					onClick={() => {
+						history.push('/files');
+						remote.getCurrentWindow().hide()
+					}}
+				>
 					<KeyboardArrowDownIcon fontSize='small' style={{ color: '#ffffff' }} />
 				</IconButton>
 			</HeaderRightInfo>

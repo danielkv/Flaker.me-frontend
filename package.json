@@ -15,36 +15,7 @@
 	"author": "Flaker.me",
 	"license": "MIT",
 	"config": {
-		"forge": {
-			"make_targets": {
-				"win32": [
-					"squirrel"
-				],
-				"darwin": [
-					"zip"
-				],
-				"linux": [
-					"deb",
-					"rpm"
-				]
-			},
-			"electronPackagerConfig": {
-				"packageManager": "yarn"
-			},
-			"electronWinstallerConfig": {
-				"name": "Flaker.me"
-			},
-			"electronInstallerDebian": {},
-			"electronInstallerRedhat": {},
-			"github_repository": {
-				"owner": "",
-				"name": ""
-			},
-			"windowsStoreConfig": {
-				"packageName": "",
-				"name": "flaker.mefrontend"
-			}
-		}
+		"forge": "./forge.config.js"
 	},
 	"dependencies": {
 		"@apollo/client": "^3.0.0-beta.20",
