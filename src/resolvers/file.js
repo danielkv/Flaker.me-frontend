@@ -17,7 +17,9 @@ import {
 	UPDATE_FILE_PROGRESS,
 	ADD_FILES,
 	UPDATE_FILE,
+	STOP_FILE_STREAMING,
 } from '../queries/files';
+import { GET_LOGGED_IN_USER_ID } from '../queries/user';
 
 export default {
 	Mutation: {
@@ -39,6 +41,7 @@ export default {
 				status: 'standBy',
 				size: stats.size, // converted to kb
 				__typename: 'File',
+				stream: null,
 
 				name: '',
 				url: '',
@@ -62,6 +65,7 @@ export default {
 				bytesCount: file.size,
 				status: 'standBy',
 				helperText: '',
+				stream: null,
 			}));
 
 			// add online files to apollo cache
@@ -109,6 +113,12 @@ export default {
 			
 			// create new file stream
 			const fileStream = fs.createReadStream(file.path, { highWaterMark: 128 * 1024 });
+			const { loggedUserId } = client.readQuery({ query: GET_LOGGED_IN_USER_ID });
+
+			// case user logout when processing uploadUri
+			if (!loggedUserId) return;
+
+			client.mutate({ mutation: UPDATE_FILE, variables: { id: file.id, data: { stream: fileStream }, update: false } });
 			
 			// setup headers
 			const requestOptions = {
@@ -168,9 +178,37 @@ export default {
 				client.mutate({ mutation: UPDATE_FILE_PROGRESS, variables: { id: file.id, bytesCount } });
 			});
 		},
+		stopFileStreaming: (_, { id, update = true }, { cache, client }) => {
+			const cacheID = `File:${id}`;
+			const file = cache.readFragment({ fragment: FILE_FRAGMENT, id: cacheID });
+			
+			// destroy file stream
+			if (file.stream) file.stream.destroy();
+			
+			// update in cache
+			const updateData = {
+				stream: null,
+				helperText: 'Upload cancelado',
+				status: 'error',
+			}
+			
+			client.mutate({ mutation: UPDATE_FILE, variables: { id: file.id, data: updateData, update } });
+		},
+		stopAllFileStreaming: (_, { update = true }, { cache, client }) => {
+			const { files } = cache.readQuery({ query: GET_FILES });
+
+			// filter only streaming files
+			files.forEach(file => {
+				// update in cache
+				if (file.stream) client.mutate({ mutation: STOP_FILE_STREAMING, variables: { id: file.id, update } });
+			})
+		},
 		updateFileProgress: (_, { id, bytesCount }, { client, cache }) => {
 			const cacheID = `File:${id}`;
 			const file = cache.readFragment({ fragment: FILE_FRAGMENT, id: cacheID });
+
+			// case file doesn't exist
+			if (!file) return;
 			
 			// status
 			file.status = 'uploading';
@@ -189,6 +227,9 @@ export default {
 		updateFile: (_, { id, data, update = true }, { cache }) => {
 			const cacheID = `File:${id}`;
 			const file = cache.readFragment({ fragment: FILE_FRAGMENT, id: cacheID });
+
+			// case file doesn't exist
+			if (!file) return;
 			
 			// file new state
 			const newState = Object.assign(file, data);
@@ -221,6 +262,7 @@ export default {
 								url: newFile.url,
 								createdAt: newFile.createdAt,
 								helperText: '',
+								stream: null,
 							})
 						}
 					});

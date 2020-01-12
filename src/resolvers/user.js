@@ -3,7 +3,7 @@ import storage from '../main/storage';
 import { getTrayIcon, createContextMenu } from '../main/trayIcon';
 import mainScreenFn from '../main/windows/main';
 
-import { GET_USER_FILES, ADD_ONLINE_FILES, CHECK_DELETED_FILES, UPDATE_FILE } from '../queries/files';
+import { GET_USER_FILES, ADD_ONLINE_FILES, CHECK_DELETED_FILES, UPDATE_FILE, STOP_ALL_FILE_STREAMING } from '../queries/files';
 import { AUTHENTICATE, LOG_USER_IN, GET_LOGGED_IN_USER_ID, INIT_USER } from '../queries/user';
 
 export default {
@@ -22,32 +22,35 @@ export default {
 		},
 
 		logUserIn: async (_, { user, token }, { cache, client }) => {
+			// log user in cache
 			cache.writeData({ data: { loggedUserId: user.id, userToken: token, company: user.company.id } });
 			storage.set('userToken', token);
 
+			// load initial user data from server
 			await client.mutate({ mutation: INIT_USER });
 
+			// recreate tray icon context menu WITH logout and settings
 			const mainScreen = mainScreenFn.get();
 			const trayIcon = getTrayIcon();
-
 			trayIcon.setContextMenu(createContextMenu(mainScreen));
-
-			return null;
 		},
 		
 		logUserOut: async (_, __, { client }) => {
+			// stop all file uploading
+			await client.mutate({ mutation: STOP_ALL_FILE_STREAMING })
+
+			// clean all cache and reset data
 			await client.resetStore();
 			storage.remove('userToken');
 
+			// recreate tray icon context menu with NO logout and settings
 			const mainScreen = mainScreenFn.get();
 			const trayIcon = getTrayIcon();
-
 			trayIcon.setContextMenu(createContextMenu(mainScreen));
 
+			// send user to login page
 			mainScreen.webContents.send('redirectTo', 'login');
 			mainScreen.show();
-			
-			return null;
 		},
 
 		initUser: async (_, __, { client }) => {

@@ -19,7 +19,7 @@ async function init() {
 
 	mainScreen.on('ready-to-show', () => {
 		client.mutate({ mutation: AUTHENTICATE_CLIENT })
-			.then(async () => {
+			.then(() => {
 				// user logged in => send user to files
 				mainScreen.webContents.send('redirectTo', 'files');
 			})

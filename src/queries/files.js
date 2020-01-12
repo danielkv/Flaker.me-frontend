@@ -85,6 +85,7 @@ export const FILE_FRAGMENT = gql`
 		bucket
 		
 		#local
+		stream
 		path
 		progress
 
@@ -120,8 +121,18 @@ export const GET_FILES = gql`
 `;
 
 export const UPLOAD_FILE = gql`
-	mutation ($file: File!) {
+	mutation($file: File!) {
 		uploadFile(file: $file) @client
+	}
+`;
+export const STOP_FILE_STREAMING = gql`
+	mutation($id: ID!, $update: Boolean) {
+		stopFileStreaming(id: $id, update: $update) @client
+	}
+`;
+export const STOP_ALL_FILE_STREAMING = gql`
+	mutation($update: Boolean) {
+		stopAllFileStreaming(update: $update) @client
 	}
 `;
 
