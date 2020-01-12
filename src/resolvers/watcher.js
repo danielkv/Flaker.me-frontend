@@ -34,8 +34,6 @@ export default {
 
 			// update cache variables
 			cache.writeData({ data: { isWatching: true } });
-
-			console.log('start');
 		},
 		stopWatching: (_, __, { cache }) => {
 			// stop all monitoring directories
@@ -43,8 +41,6 @@ export default {
 
 			// update cache variable
 			cache.writeData({ data: { isWatching: false } });
-
-			console.log('stop');
 		}
 	},
 }
