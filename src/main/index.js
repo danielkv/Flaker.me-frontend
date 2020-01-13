@@ -1,5 +1,7 @@
+import './appInstall';
 import { app } from 'electron';
 import { enableLiveReload } from 'electron-compile';
+import './autoLaunch';
 
 import initApp from './initApp';
 
