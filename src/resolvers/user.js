@@ -30,27 +30,27 @@ export default {
 			await client.mutate({ mutation: INIT_USER });
 
 			// recreate tray icon context menu WITH logout and settings
-			const mainScreen = mainScreenFn.get();
 			const trayIcon = getTrayIcon();
-			trayIcon.setContextMenu(createContextMenu(mainScreen));
+			trayIcon.setContextMenu(createContextMenu('loggedIn'));
 		},
 		
 		logUserOut: async (_, __, { client }) => {
+			const mainScreen = mainScreenFn.get();
+
+			// send user to login page
+			mainScreen.webContents.send('redirectTo', 'login');
+			if (!mainScreen.isVisible()) mainScreen.show();
+
 			// stop all file uploading
 			await client.mutate({ mutation: STOP_ALL_FILE_STREAMING })
 
 			// clean all cache and reset data
-			await client.resetStore();
+			client.resetStore();
 			storage.remove('userToken');
 
 			// recreate tray icon context menu with NO logout and settings
-			const mainScreen = mainScreenFn.get();
 			const trayIcon = getTrayIcon();
-			trayIcon.setContextMenu(createContextMenu(mainScreen));
-
-			// send user to login page
-			mainScreen.webContents.send('redirectTo', 'login');
-			mainScreen.show();
+			trayIcon.setContextMenu(createContextMenu('loggedOut'));
 		},
 
 		initUser: async (_, __, { client }) => {

@@ -13,7 +13,7 @@ import watcherResolvers from '../resolvers/watcher';
 import { createAuthLink } from './authLink';
 import initialCache from './initialCache';
 
-const host = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:4000/graphql';
+const host = !global.isDevMode ? 'https://flakerme-backend.herokuapp.com/graphql' : 'http://localhost:4000/graphql';
 const httpLink = new HttpLink({ uri: host, fetch });
 
 const cache = new InMemoryCache({});

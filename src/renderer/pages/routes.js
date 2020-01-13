@@ -25,11 +25,11 @@ export default function Main() {
 	return (
 		<ContentContainer>
 			<Switch>
-				<Route exact path='/' component={SplashScreen} />
-
 				<Route path='/login' component={Login} />
 				<Route path='/createAccount' component={CreateAccount} />
 				<Route path='/forgotPassword' component={ForgotPassword} />
+
+				<Route exact path='/' component={SplashScreen} />
 
 				<Route path='/files' component={Files} />
 				<Route path='/settings' component={Settings} />

@@ -14,7 +14,7 @@ import { GET_LOGGED_IN_USER_ID } from '../../../queries/user';
 export default function HeaderComponent() {
 	const history = useHistory();
 
-	const { data: { loggedUserId } } = useQuery(GET_LOGGED_IN_USER_ID);
+	const { data: { loggedUserId = null } = {} } = useQuery(GET_LOGGED_IN_USER_ID);
 
 	return (
 		<Header disableDrag>
@@ -29,8 +29,8 @@ export default function HeaderComponent() {
 					title='Minimizar'
 					alt='Minimizar'
 					onClick={() => {
-						history.push('/files');
 						remote.getCurrentWindow().hide()
+						if (loggedUserId) history.push('/files');
 					}}
 				>
 					<KeyboardArrowDownIcon fontSize='small' style={{ color: '#ffffff' }} />

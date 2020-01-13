@@ -13,10 +13,10 @@ export function getTrayIcon() {
 	return trayIcon;
 }
 
-export function createContextMenu(mainScreen) {
-	const { loggedUserId } = client.readQuery({ query: GET_LOGGED_IN_USER_ID });
+export function createContextMenu(userStatus) {
+	const mainScreen = mainScreenFn.get();
 
-	if (loggedUserId) {
+	if (userStatus === 'loggedIn') {
 		return Menu.buildFromTemplate([
 			{ label: 'Configurações', click: ()=> { mainScreen.webContents.send('redirectTo', 'settings'); mainScreen.show(); } },
 			{ type: 'separator' },
