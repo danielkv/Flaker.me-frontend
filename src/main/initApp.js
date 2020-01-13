@@ -24,6 +24,9 @@ async function init() {
 				mainScreen.webContents.send('redirectTo', 'files');
 			})
 			.catch((err)=>{
+				// show screen if not logged in
+				mainScreen.show();
+
 				// eslint-disable-next-line no-undef
 				if (isDevMode) console.log(getErrors(err));
 

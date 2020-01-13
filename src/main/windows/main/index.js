@@ -47,10 +47,6 @@ function create() {
 		mainScreen = null;
 	});
 
-	mainScreen.on('ready-to-show', () => {
-		mainScreen.show();
-	});
-
 	return mainScreen;
 }
 
