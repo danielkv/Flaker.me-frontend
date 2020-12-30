@@ -8,3 +8,4 @@ Faz o upload para Storage do gCloud com controle de empresas, usuários, espaço
 * Electron
 * ReactJS
 * GraphQL
+* Apollo Client
